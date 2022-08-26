@@ -14,9 +14,9 @@ $ python -m venv .venv
   - $ pip install -r requirements.txt
 
 4. Com os requirements instalados basta criar o database, para isso basta executar:
-$ flask db init
-$ flask db migrate -m "Initial migration"
-$ flask db upgrade
+- $ flask db init
+- $ flask db migrate -m "Initial migration"
+- $ flask db upgrade
 
 5. Feito isso basta executar o main.py com:
 python main.py 
