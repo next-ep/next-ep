@@ -4,10 +4,10 @@
 
 1. Por boa prática criar virtual environment para o projeto, para isso basta abrir um terminal no diretório do projeto e executar o seguinte comando:
 $ python -m venv .venv
-2. Em sequência iniciar o ambiente virtual.
-2.1. Se estiver pelo cdc com o comando:
+2. Em sequência iniciar o ambiente virtual:
+  2.1. Se estiver pelo cdc com o comando:
 $ .venv\Scripts\activate.bat
-2.2. Caso esteja utilizando o powershell:
+  2.2. Caso esteja utilizando o powershell:
 $ .venv\Scripts\activate.ps1
 
 3. Com o ambiente virtual iniciado instalar os requirimentos com:
