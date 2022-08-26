@@ -1,0 +1,27 @@
+{% extends 'components/base.html' %}
+{% import "bootstrap/form.html" as wtf %}
+
+{% block title %}
+<title>Nome Projeto - Trocar Usuário</title>
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar.html' %}
+<div class="container">
+    <form class="-formsignin" method="POST" action="/account/change_username">
+      <h2 class="form-signin-heading">Trocar Username:</h2>
+      <h3 class="form-signin-heading">Username atual: {{username}}</h3>
+      {{ form.hidden_tag() }}
+      {{ wtf.render_field(form.new_username) }}
+      {{ wtf.render_field(form.password) }}
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Entrar</button>
+    </form>
+</div> <!-- /container -->
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

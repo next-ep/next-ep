@@ -1,0 +1,27 @@
+{% extends 'components/base.html' %}
+{% import "bootstrap/form.html" as wtf %}
+
+{% block title %}
+<title>Nome Projeto - Login</title>
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+{% endblock %}
+
+{% block content %}
+{% include 'components/navbar.html' %}
+<div class="container">
+    <form class="-formsignin" method="POST" action="/login">
+      <h2 class="form-signin-heading">Realize o Login:</h2>
+      {{ form.hidden_tag() }}
+      {{ wtf.render_field(form.username) }}
+      {{ wtf.render_field(form.password) }}
+      {{ wtf.render_field(form.remember) }}
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Entrar</button>
+    </form>
+</div> <!-- /container -->
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
