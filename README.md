@@ -19,4 +19,4 @@ $ python -m venv .venv
 - $ flask db upgrade
 
 5. Feito isso basta executar o main.py com:
-python main.py 
+- $ python main.py 
