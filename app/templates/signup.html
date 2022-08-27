@@ -1,0 +1,26 @@
+{% extends 'components/base.html' %}
+{% import "bootstrap/form.html" as wtf %}
+
+{% block title %}
+<title>Nome Projeto - Cadastro</title>
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <form class="-formsignin" method="POST" action="/signup">
+      <h2 class="form-signin-heading">Cadastrar:</h2>
+      {{ form.hidden_tag() }}
+      {{ wtf.render_field(form.username) }}
+      {{ wtf.render_field(form.email) }}
+      {{ wtf.render_field(form.password) }}
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Entrar</button>
+    </form>
+</div> <!-- /container -->
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
