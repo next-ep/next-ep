@@ -9,10 +9,12 @@
 {% endblock %}
 
 {% block content %}
+{% include 'components/navbar.html' %}
 <div class="container">
     <h1>INDEX</h1>
 </div> 
 {% endblock %}
 
 {% block scripts %}
+{{super()}}
 {% endblock %}

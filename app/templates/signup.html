@@ -2,7 +2,7 @@
 {% import "bootstrap/form.html" as wtf %}
 
 {% block title %}
-<title>Nome Projeto - Cadastro</title>
+<title>NextEP - Cadastro</title>
 {% endblock %}
 
 {% block styles %}
@@ -10,6 +10,7 @@
 {% endblock %}
 
 {% block content %}
+{% include 'components/navbar.html' %}
 <div class="container">
     <form class="-formsignin" method="POST" action="/signup">
       <h2 class="form-signin-heading">Cadastrar:</h2>
@@ -23,4 +24,5 @@
 {% endblock %}
 
 {% block scripts %}
+{{super()}}
 {% endblock %}

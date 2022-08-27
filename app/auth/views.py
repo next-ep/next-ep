@@ -13,6 +13,9 @@ def index():
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('auth.index'))
+
     form = LoginForm()
 
     if form.validate_on_submit():
@@ -29,6 +32,9 @@ def login():
 
 @auth.route('/signup', methods=['GET', 'POST'])
 def signup():
+    if current_user.is_authenticated:
+        return redirect(url_for('auth.index'))
+
     form = RegisterForm()
 
     if form.validate_on_submit():
@@ -49,7 +55,7 @@ def signup():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('auth.index'))
+    return redirect(url_for('auth.login'))
 
 @auth.route('/account/change_password', methods=['GET', 'POST'])
 @login_required
