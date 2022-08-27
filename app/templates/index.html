@@ -10,7 +10,11 @@
 
 {% block content %}
 <div class="container">
-    <h1>INDEX</h1>
+    {%if current_user.is_authenticated%}
+    <h1>Bem vindo, <label  name="user">{{ current_user.username }}</label>!</h1>
+    {%else%}
+    <h1>Bem vindo ao NextEP!</h1>
+    {%endif%}
 </div> 
 {% endblock %}
 
