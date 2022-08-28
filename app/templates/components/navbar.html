@@ -17,23 +17,22 @@
     </div>
     <ul class="navbar-nav justify-content-end">
         {%if current_user.is_authenticated%}
-        <li class="nav-item dropdown">
-            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Profile
-            </a>
-            <ul class="dropdown-menu">
+        <div class="btn-group">
+          <div class="btn-group dropleft" role="group">
+            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span class="sr-only">Dropleft</span>
+            </button>
+            <div class="dropdown-menu">
               <li><a class="nav-link" href="{{url_for('auth.change_username')}}">Change Username</a></li>
               <li><a class="nav-link" href="{{url_for('auth.change_password')}}">Change Password</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="nav-link active" aria-current="page" href="{{url_for('auth.logout')}}">Logout</a></li>
-            </ul>
-          </li>
-        <li class="nav-item">
-          
-        </li>
-        <li class="nav-item">
-            
-          </li>
+            </div>
+          </div>
+          <button type="button" class="btn btn-secondary">
+            <li><a class="nav-link active" aria-current="page" href="#">Profile</a></li>
+          </button>
+        </div>
         {%else%}
         <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="{{url_for('auth.signup')}}">SignUp</a>
