@@ -1,0 +1,45 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{url_for('auth.index')}}">NextEP</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{{url_for('auth.index')}}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Series</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <ul class="navbar-nav justify-content-end">
+        {%if current_user.is_authenticated%}
+        <div class="btn-group">
+          <div class="btn-group dropleft" role="group">
+            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span class="sr-only">Dropleft</span>
+            </button>
+            <div class="dropdown-menu">
+              <li><a class="nav-link" href="{{url_for('auth.change_username')}}">Change Username</a></li>
+              <li><a class="nav-link" href="{{url_for('auth.change_password')}}">Change Password</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="nav-link active" aria-current="page" href="{{url_for('auth.logout')}}">Logout</a></li>
+            </div>
+          </div>
+          <button type="button" class="btn btn-secondary">
+            <li><a class="nav-link active" aria-current="page" href="#">Profile</a></li>
+          </button>
+        </div>
+        {%else%}
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{{url_for('auth.signup')}}">SignUp</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{url_for('auth.login')}}">Login</a>
+        </li>
+        {%endif%}
+    </ul>
+</nav>
