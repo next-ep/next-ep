@@ -9,13 +9,57 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    {%if current_user.is_authenticated%}
-    <h1>Bem vindo, <label  name="user">{{ current_user.username }}</label>!</h1>
+
+{%if current_user.is_authenticated%}
+    <div class="card">
+        <div class="card-header">
+        Bem vindo, <label  name="user">{{ current_user.username }}</label>!
+        </div>
+        <div class="card-body">
+        <h5 class="card-title">Seu diário de séries</h5>
+        <p class="card-text">Aqui você controla as séries que você assiste, e descobre o que seus amigos estão assistindo também.</p>
+        <a href="#" class="btn btn-primary">Adicione uma  nova série</a>
+        <a href="#" class="btn btn-primary">Gerencie suas séries</a>
+        <a href="#" class="btn btn-primary">Cadastre amigos</a>
+        </div>
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nome da Série</th>
+                <th scope="col">Temporadas</th>
+                <th scope="col">Episódios</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">1</th>
+                <td>#####</td>
+                <td>#####</td>
+                <td>#####</td>
+              </tr>
+              <tr>
+                <th scope="row">2</th>
+                <td>#####</td>
+                <td>#####</td>
+                <td>#####</td>
+              </tr>
+            </tbody>
+          </table>
+    </div>
+
     {%else%}
-    <h1>Bem vindo ao NextEP!</h1>
+    <div class="card">
+        <div class="card-header">
+        NEXT-EP
+        </div>
+        <div class="card-body">
+        <h5 class="card-title">Seu diário de séries</h5>
+        <p class="card-text">Aqui você controla as séries que você assiste, e descobre o que seus amigos estão assistindo também.</p>
+        <a href="{{url_for('auth.signup')}}" class="btn btn-primary">Crie sua conta.</a>
+        </div>
+    </div>
     {%endif%}
-</div> 
 {% endblock %}
 
 {% block scripts %}
