@@ -46,7 +46,7 @@ def signup():
             db.session.commit()
             return redirect(url_for("auth.login"))
             
-        flash("Erro ao cadastrar!", category="error")
+        flash("Erro ao cadastrar: Usuário ou Email já utilizados", category="warning")
         return redirect(url_for("auth.signup"))
 
     return render_template('signup.html', form=form)
@@ -72,7 +72,7 @@ def change_password():
             logout_user()
             return redirect(url_for('auth.index'))
                 
-        flash("Erro ao alterar senha!", category="error")
+        flash("Erro ao alterar senha!", category="warning")
         return redirect(url_for('auth.change_password'))
 
     return render_template('change_password.html', form=form)
@@ -91,7 +91,7 @@ def change_username():
             db.session.commit()
             return redirect(url_for('auth.index'))
         
-        flash("Erro ao alterar o usuário!", category="error")
+        flash("Erro ao alterar o usuário!", category="warning")
         return redirect(url_for('auth.change_username'))
 
     return render_template('change_username.html', username=current_user.username, form=form)
