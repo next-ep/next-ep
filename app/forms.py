@@ -20,3 +20,7 @@ class UpdatePasswordForm(FlaskForm):
 class UpdateUsernameForm(FlaskForm):
     new_username = StringField('Novo usuário', validators=[InputRequired(), Length(min=4, max=15)])
     password = PasswordField('Senha', validators=[InputRequired(), Length(min=8, max=80)])
+
+class RegisterSerie(FlaskForm):
+    serie_name = StringField('Serie name', validators=[InputRequired(), Length(min=2, max=80)])
+    password = PasswordField('Senha', validators=[InputRequired(), Length(min=8, max=80)])

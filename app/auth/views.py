@@ -1,7 +1,7 @@
 from flask import render_template, redirect, flash, url_for
 from flask_login import login_user, login_required, current_user, logout_user
-from app.models import User
-from app.forms import LoginForm, RegisterForm, UpdatePasswordForm, UpdateUsernameForm
+from app.models import Serie, User
+from app.forms import LoginForm, RegisterForm, RegisterSerie, UpdatePasswordForm, UpdateUsernameForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
 
@@ -95,3 +95,22 @@ def change_username():
         return redirect(url_for('auth.change_username'))
 
     return render_template('change_username.html', username=current_user.username, form=form)
+
+@auth.route('/series/new', methods=['GET', 'POST'])
+@login_required
+def register_serie():
+    form = RegisterSerie()
+
+    if form.validate_on_submit():
+        user = User.query.filter_by(id=current_user.get_id()).first()
+        if user and \
+        check_password_hash(current_user.password, form.password.data):
+            new_serie = Serie(form.serie_name.data, user.id)
+            db.session.add(new_serie)
+            db.session.commit()
+            return redirect(url_for('auth.index'))
+        
+        flash("Erro ao cadastrar série. Verifique o password informado e tente novamente.", category="warning")
+        return redirect(url_for('auth.register_serie'))
+
+    return render_template('register_serie.html', form=form)
