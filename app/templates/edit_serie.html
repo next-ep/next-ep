@@ -1,0 +1,27 @@
+{% extends 'components/base.html' %}
+{% import "bootstrap/form.html" as wtf %}
+
+{% block title %}
+<title>NextEP - Cadastrar Serie</title>
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <form class="container" method="POST" action="/series/edit/{{serie.id}}">
+      <h2 class="form-signin-heading">Editar Série: {{serie.name}}</h2>
+      {{ form.hidden_tag() }}
+      {{ wtf.render_field(form.serie_name) }}
+      {{ wtf.render_field(form.serie_type) }}
+      {{ wtf.render_field(form.password) }}
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Salvar</button>
+    </form>
+</div> <!-- /container -->
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+{% endblock %}
