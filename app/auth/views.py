@@ -105,12 +105,20 @@ def register_serie():
         user = User.query.filter_by(id=current_user.get_id()).first()
         if user and \
         check_password_hash(current_user.password, form.password.data):
-            new_serie = Serie(form.serie_name.data, user.id)
+            new_serie = Serie(form.serie_name.data, form.serie_type, user.id)
             db.session.add(new_serie)
             db.session.commit()
-            return redirect(url_for('auth.index'))
+            return redirect(url_for('list_series.html'))
         
         flash("Erro ao cadastrar série. Verifique o password informado e tente novamente.", category="warning")
         return redirect(url_for('auth.register_serie'))
 
     return render_template('register_serie.html', form=form)
+
+@auth.route('/series', methods=['GET'])
+@login_required
+def get_series_by_user():
+    lines = 0
+    user = User.query.filter_by(id=current_user.get_id()).first()
+    series = db.session.execute(f'SELECT * FROM Serie s WHERE s.user_id = {user.id}')
+    return render_template('list_series.html', series=series, lines=lines)

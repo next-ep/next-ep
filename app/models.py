@@ -20,6 +20,7 @@ class Serie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    type = db.Column(db.String(50), unique=False)
     user = relationship('User')
     concluded = db.Column(db.Boolean, unique=False, default=False)
 
