@@ -1,0 +1,57 @@
+{% extends 'components/base.html' %}
+{% import "bootstrap/form.html" as wtf %}
+
+{% block title %}
+<title>NextEP - Suas Séries</title>
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>Séries cadastradas:</h2>
+    </div>
+    <div>
+        <form>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Nome</th>
+                      <th scope="col">Concluída</th>
+                      <th scope="col">Gênero</th>
+                      <th scope="col">Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for serie in series %}
+                    <tr>
+                        <td>{{serie.id}}</th>
+                        <td>{{serie.name}}</td>
+                        <td>{{serie.concluded}}</td>
+                        <td>{{serie.type}}</td>
+                        <td>
+                            <button href="/series/edit/{{serie.id}}" class="btn btn-sm btn-warning" >Editar</button>
+                            <button href="/series/delete/{{serie.id}}" class="btn btn-sm btn-danger">Excluir</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+<br>
+
+<ul>
+    <a href="/series/new" class="btn btn-primary">Adicione uma nova série</a>
+</ul>
+
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+{% endblock %}
