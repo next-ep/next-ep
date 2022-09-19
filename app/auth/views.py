@@ -122,7 +122,7 @@ def get_series_by_user():
     series = db.session.execute(f'SELECT * FROM Serie s WHERE s.user_id = {user.id}')
     return render_template('list_series.html', series=series)
 
-@auth.route('/series/edit/<id>', methods=['GET', 'PUT'])
+@auth.route('/series/edit/<id>', methods=['GET', 'POST'])
 @login_required
 def edit_serie(id):
     form = EditSerie()
@@ -139,3 +139,11 @@ def edit_serie(id):
         flash("Erro ao editar série. Verifique o password informado e tente novamente.", category="warning")
         return redirect(url_for('auth.edit_serie'))
     return render_template('edit_serie.html', serie=serie, form=form)
+
+@auth.route('/series/delete/<id>', methods=['GET', 'DELETE'])
+@login_required
+def delete_serie(id):
+    serie = Serie.query.get(id)
+    db.session.delete(serie)
+    db.session.commit()
+    return redirect(url_for('auth.get_series_by_user'))
