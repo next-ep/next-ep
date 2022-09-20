@@ -122,7 +122,7 @@ def get_series_by_user():
     series = db.session.execute(f'SELECT * FROM Serie s WHERE s.user_id = {user.id}')
     return render_template('list_series.html', series=series)
 
-@auth.route('/series/edit/<id>', methods=['GET', 'POST'])
+@auth.route('/series/edit/<id>', methods=['GET', 'PUT'])
 @login_required
 def edit_serie(id):
     form = EditSerie()
@@ -147,3 +147,4 @@ def delete_serie(id):
     db.session.delete(serie)
     db.session.commit()
     return redirect(url_for('auth.get_series_by_user'))
+
