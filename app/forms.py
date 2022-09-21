@@ -24,9 +24,10 @@ class UpdateUsernameForm(FlaskForm):
 class RegisterSerie(FlaskForm):
     serie_name = StringField('Nome', validators=[InputRequired(), Length(min=2, max=80)])
     serie_type = StringField('Gênero', validators=[InputRequired(), Length(min=2, max=80)])
-    password = PasswordField('Senha', validators=[InputRequired(), Length(min=8, max=80)])
 
 class EditSerie(FlaskForm):
     serie_name = StringField('Nome', validators=[InputRequired(), Length(min=2, max=80)])
     serie_type = StringField('Gênero', validators=[InputRequired(), Length(min=2, max=80)])
-    password = PasswordField('Senha', validators=[InputRequired(), Length(min=8, max=80)])
+
+class RegisterCommentary(FlaskForm):
+    commentary_text = StringField('Adicionar Comentário:', render_kw={'class': 'form-control', 'rows': '3'}, validators=[InputRequired(), Length(min=1, max=300)])

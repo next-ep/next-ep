@@ -21,8 +21,8 @@
                     <tr>
                       <th scope="col">#</th>
                       <th scope="col">Nome</th>
-                      <th scope="col">Concluída</th>
                       <th scope="col">Gênero</th>
+                      <th scope="col">Concluída</th>
                       <th scope="col">Ações</th>
                     </tr>
                   </thead>
@@ -31,11 +31,12 @@
                     <tr>
                         <td>{{serie.id}}</th>
                         <td>{{serie.name}}</td>
+                        <td>{{serie.serie_type}}</td>
                         <td>{{serie.concluded}}</td>
-                        <td>{{serie.type}}</td>
                         <td>
-                            <button href="/series/edit/{{serie.id}}" class="btn btn-sm btn-warning" >Editar</button>
-                            <button href="/series/delete/{{serie.id}}" class="btn btn-sm btn-danger">Excluir</button>
+                            <a href="{{url_for('series.details_serie',id=serie.id)}}" class="btn btn-sm btn-info" role="button">Detalhes</a>
+                            <a href="{{url_for('series.edit_serie',id=serie.id)}}" class="btn btn-sm btn-warning" role="button">Editar</a>
+                            <a href="{{url_for('series.delete_serie',id=serie.id)}}" class="btn btn-sm btn-danger" role="button">Excluir</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -47,7 +48,7 @@
 <br>
 
 <ul>
-    <a href="/series/new" class="btn btn-primary">Adicione uma nova série</a>
+    <a href="{{url_for('series.register_serie')}}" class="btn btn-primary">Adicione uma nova série</a>
 </ul>
 
 {% endblock %}
