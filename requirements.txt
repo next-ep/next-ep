@@ -20,3 +20,5 @@ SQLAlchemy==1.4.40
 visitor==0.1.3
 Werkzeug==2.2.2
 WTForms==3.0.1
+psycopg2-binary==2.9.3
+python-dotenv==0.21.0
