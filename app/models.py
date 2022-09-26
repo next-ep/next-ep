@@ -50,3 +50,9 @@ class Episode(db.Model):
     episode_number = db.Column(db.Integer)
     season_id = db.Column(db.Integer, db.ForeignKey('season.id'))
     concluded = db.Column(db.Boolean, unique=False, default=False)
+
+class Commentary(db.Model):
+    __tablename__ = "commentary"
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String(300))
+    serie_id = db.Column(db.Integer, db.ForeignKey('serie.id'))
