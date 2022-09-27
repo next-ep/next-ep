@@ -1,7 +1,9 @@
-from flask import render_template, redirect, flash, url_for
+from hashlib import new
+from typing import List
+from flask import render_template, redirect, flash, url_for, request
 from flask_login import login_required, current_user
-from app.models import Serie, User, Commentary
-from app.forms import EditSerie, RegisterSerie, RegisterCommentary
+from app.models import Season, Serie, User, Commentary
+from app.forms import EditSerie, RegisterSeason, RegisterSerie, RegisterCommentary
 from app import db
 
 from . import series
@@ -34,19 +36,18 @@ def get_series_by_user():
 @series.route('/series/edit/<id>', methods=['GET', 'POST'])
 @login_required
 def edit_serie(id):
-    form = EditSerie()
     serie = Serie.query.get(int(id))
-    if form.validate_on_submit():
+    if request.method == 'POST':
         user = User.query.filter_by(id=current_user.get_id()).first()
         if user and serie:
-            serie.name = form.serie_name.data
+            serie.name = request.form['serie_name']
             serie.user_id = user.id
-            serie.serie_type = form.serie_type.data
+            serie.serie_type = request.form['serie_type']
             db.session.commit()
             return redirect(url_for('series.get_series_by_user'))
         flash("Erro ao editar série. Tente novamente.", category="warning")
         return redirect(url_for('series.edit_serie'))
-    return render_template('edit_serie.html', serie=serie, form=form)
+    return render_template('edit_serie.html', serie=serie)
 
 @series.route('/series/delete/<id>', methods=['GET', 'POST'])
 @login_required
@@ -98,3 +99,26 @@ def delete_commentary(serie_id,commentary_id):
     else:
         flash("Erro ao deletar comentário. Tente novamente.", category="warning")
         return redirect(url_for('series.details_serie', id=serie_id))
+
+@series.route('/series/<id>/seasons/add', methods=['GET', 'POST'])
+@login_required
+def add_seasons(id):
+    form = RegisterSeason()
+    serie = Serie.query.get(int(id))
+    count = 0
+    if request.method == "GET":
+        if serie:
+            return render_template('add_seasons.html', serie=serie, form=form, count=count)
+    if request.method == "POST":
+        seasons_number = form.seasons_number.data
+        list_season = []
+        while(count < seasons_number):
+            season = Season(count + 1, serie.id)
+            list_season.append(season)
+            count += 1
+        db.session.add_all(list_season)
+        serie.seasons = list_season
+        db.session.commit()
+        return redirect(url_for('series.details_serie', id=id))
+        
+    

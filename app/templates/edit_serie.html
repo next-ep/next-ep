@@ -10,18 +10,32 @@
 {% endblock %}
 
 {% block content %}
+<script type="text/javascipt" src="{{url_for('static', filename='js.js')}}"></script>
 <div class="container">
   <a href="{{url_for('series.get_series_by_user')}}" class="btn btn-sm" role="button">Retornar</a>
     <form class="container" method="POST" action="{{url_for('series.edit_serie',id=serie.id)}}">
       <h2 class="form-signin-heading">Editar Série: {{serie.name}}</h2>
-      {{ form.hidden_tag() }}
-      {{ wtf.render_field(form.serie_name) }}
-      {{ wtf.render_field(form.serie_type) }}
+      <div class="form-group required">
+        <label class="form-control-label" for="serie_name">Nome</label>
+        <input class="form-control" id="serie_name" maxlength="80" minlength="2" name="serie_name" required type="text" value="{{serie.name}}">
+      </div>
+      <div class="form-group required">
+        <label class="form-control-label" for="serie_type">Gênero</label>
+        <input class="form-control" id="serie_type" maxlength="80" minlength="2" name="serie_type" required type="text" value="{{serie.serie_type}}">
+      </div>
+      <br>
+      <div>
+        <a id="add-seasons" class="btn btn-lg btn-primary btn-block" method="GET" href="{{url_for('series.add_seasons', id=serie.id)}}" role="button">Adicionar temporadas!</a>
+      </div>
+        <br>
+        <br>
+      </div>
       <button class="btn btn-lg btn-primary btn-block" type="submit">Salvar</button>
     </form>
 </div> <!-- /container -->
+
 {% endblock %}
 
 {% block scripts %}
-{{super()}}
+<script src="{{url_for('static', filename='js.js')}}"></script>
 {% endblock %}

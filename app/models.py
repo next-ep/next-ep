@@ -38,10 +38,9 @@ class Season(db.Model):
     episodes = relationship('Episode', backref="season")
     concluded = db.Column(db.Boolean, unique=False, default=False)
 
-    def __init__(self, season_number, serie_id, episodes):
+    def __init__(self, season_number, serie_id):
         self.season_number = season_number
         self.serie_id = serie_id
-        self.episodes = episodes
 
 
 class Episode(db.Model):

@@ -1,5 +1,8 @@
+from audioop import minmax
+from unicodedata import numeric
+from xmlrpc.client import Boolean
 from flask_wtf import FlaskForm 
-from wtforms import StringField, PasswordField, BooleanField
+from wtforms import StringField, PasswordField, BooleanField, IntegerField
 from wtforms.validators import InputRequired, Email, Length, EqualTo
 
 class LoginForm(FlaskForm):
@@ -28,6 +31,10 @@ class RegisterSerie(FlaskForm):
 class EditSerie(FlaskForm):
     serie_name = StringField('Nome', validators=[InputRequired(), Length(min=2, max=80)])
     serie_type = StringField('Gênero', validators=[InputRequired(), Length(min=2, max=80)])
+    serie_concluded = BooleanField('Concluída')
 
 class RegisterCommentary(FlaskForm):
     commentary_text = StringField('Adicionar Comentário:', render_kw={'class': 'form-control', 'rows': '3'}, validators=[InputRequired(), Length(min=1, max=300)])
+
+class RegisterSeason(FlaskForm):
+    seasons_number = IntegerField('Número da Temporada', validators=[InputRequired()])
