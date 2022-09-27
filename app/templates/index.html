@@ -3,7 +3,6 @@
 {% block title %}
 <title>NextEP - Index</title>
 {% endblock %}
-
 {% block styles %}
 {{super()}}
 {% endblock %}
@@ -18,47 +17,44 @@
         <div class="card-body">
         <h5 class="card-title">Seu diário de séries</h5>
         <p class="card-text">Aqui você controla as séries que você assiste, e descobre o que seus amigos estão assistindo também.</p>
-        <a href="#" class="btn btn-primary">Adicione uma  nova série</a>
-        <a href="#" class="btn btn-primary">Gerencie suas séries</a>
-        <a href="#" class="btn btn-primary">Cadastre amigos</a>
+        <a href="{{url_for('auth.get_series_by_user')}}" class="btn btn-primary">Gerencie suas séries</a>
         </div>
-        <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Nome da Série</th>
-                <th scope="col">Temporadas</th>
-                <th scope="col">Episódios</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>#####</td>
-                <td>#####</td>
-                <td>#####</td>
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>#####</td>
-                <td>#####</td>
-                <td>#####</td>
-              </tr>
-            </tbody>
-          </table>
-    </div>
-
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Nome da série</h5>
+                <p class="card-text">Comentário sobre a série.</p>
+                <a href="#" class="btn btn-primary">Visitar</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Nome da série</h5>
+                <p class="card-text">Comentário sobre a série.</p>
+                <a href="#" class="btn btn-primary">Visitar</a>
+              </div>
+            </div>
+          </div>
+        </div>
     {%else%}
-    <div class="card">
-        <div class="card-header">
-        NEXT-EP
+    <div class="card text-center">
+      <div class="card-header" style="font-size:medium">
+        <h5>Next-EP</h5>
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">Controle e deixe que outros acompanhem o que você assiste!</h5>
+        <div class="card bg-dark text-white">
+          <img src="https://cdn.pixabay.com/photo/2017/06/03/18/21/star-wars-2369317_960_720.png" class="card-img" alt="Imagem Principall" style="height: 350px; position:relative; background-color: black;">
+          <div class="card-img-overlay">
+            <h5 class="card-title">Divirta-se!</h5>
+            <p class="card-text">Adicione séries, marque episódios e temporadas que assistiu, deixe comentários e indique aos seus amigos!</p>
+            <div class="Button">
+              <a href="{{url_for('auth.signup')}}" class="btn btn-primary btn-lg" style="background-color: crimson" >Crie sua conta</a>
+            </div>
         </div>
-        <div class="card-body">
-        <h5 class="card-title">Seu diário de séries</h5>
-        <p class="card-text">Aqui você controla as séries que você assiste, e descobre o que seus amigos estão assistindo também.</p>
-        <a href="{{url_for('auth.signup')}}" class="btn btn-primary">Crie sua conta.</a>
-        </div>
-    </div>
     {%endif%}
 {% endblock %}
 
