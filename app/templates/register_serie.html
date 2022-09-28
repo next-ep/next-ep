@@ -11,12 +11,11 @@
 
 {% block content %}
 <div class="container">
-    <form class="-formsignin" method="POST" action="/series/new">
+    <form class="-formsignin" method="POST" action="{{url_for('series.register_serie')}}">
       <h2 class="form-signin-heading">Cadastrar Série</h2>
       {{ form.hidden_tag() }}
       {{ wtf.render_field(form.serie_name) }}
       {{ wtf.render_field(form.serie_type) }}
-      {{ wtf.render_field(form.password) }}
       <button class="btn btn-lg btn-primary btn-block" type="submit">Salvar</button>
     </form>
 </div> <!-- /container -->

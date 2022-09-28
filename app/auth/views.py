@@ -93,49 +93,4 @@ def change_username():
         
         flash("Erro ao alterar o usuário!", category="warning")
         return redirect(url_for('auth.change_username'))
-
     return render_template('change_username.html', username=current_user.username, form=form)
-
-@auth.route('/series/new', methods=['GET', 'POST'])
-@login_required
-def register_serie():
-    form = RegisterSerie()
-
-    if form.validate_on_submit():
-        user = User.query.filter_by(id=current_user.get_id()).first()
-        if user and \
-        check_password_hash(current_user.password, form.password.data):
-            new_serie = Serie(form.serie_name.data, form.serie_type.data, user.id)
-            db.session.add(new_serie)
-            db.session.commit()
-            return redirect(url_for('auth.get_series_by_user'))
-        
-        flash("Erro ao cadastrar série. Verifique o password informado e tente novamente.", category="warning")
-        return redirect(url_for('auth.register_serie'))
-
-    return render_template('register_serie.html', form=form)
-
-@auth.route('/series', methods=['GET'])
-@login_required
-def get_series_by_user():
-    user = User.query.filter_by(id=current_user.get_id()).first()
-    series = db.session.execute(f'SELECT * FROM Serie s WHERE s.user_id = {user.id}')
-    return render_template('list_series.html', series=series)
-
-@auth.route('/series/edit/<id>', methods=['GET', 'PUT'])
-@login_required
-def edit_serie(id):
-    form = EditSerie()
-    serie = Serie.query.get(int(id))
-    if form.validate_on_submit():
-        user = User.query.filter_by(id=current_user.get_id()).first()
-        if user and \
-        check_password_hash(current_user.password, form.password.data):
-            serie.name = form.serie_name.data
-            serie.user_id = user.id
-            serie.serie_type = form.serie_type.data
-            db.session.commit()
-            return redirect(url_for('auth.get_series_by_user'))
-        flash("Erro ao editar série. Verifique o password informado e tente novamente.", category="warning")
-        return redirect(url_for('auth.edit_serie'))
-    return render_template('edit_serie.html', serie=serie, form=form)
