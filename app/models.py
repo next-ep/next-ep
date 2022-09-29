@@ -11,16 +11,16 @@ def current_user(user_id):
 class User(UserMixin, db.Model):
     __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(15), unique=True)
-    email = db.Column(db.String(50), unique=True)
-    password = db.Column(db.String(80))
+    username = db.Column(db.String(255), unique=True)
+    email = db.Column(db.String(255), unique=True)
+    password = db.Column(db.String(255))
     series = relationship('Serie', backref="user")
 
 class Serie(db.Model):
     __tablename__ = "serie"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=False)
-    serie_type = db.Column(db.String(50), unique=False)
+    name = db.Column(db.String(255), unique=False)
+    serie_type = db.Column(db.String(255), unique=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     seasons = relationship('Season', backref="serie")
     concluded = db.Column(db.Boolean, unique=False, default=False)

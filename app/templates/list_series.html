@@ -15,6 +15,17 @@
         <h2>Séries cadastradas:</h2>
     </div>
     <div>
+        <div style="float: right; margin-right: 1%;">
+            <a href="{{url_for('series.get_series_by_user')}}" class="btn btn-sm btn-secondary"role="button">Limpar Busca</a>
+        </div>
+        <div style="float: right; margin-right: 1%;">
+            <form class="form-inline mr-auto" method="POST" action="{{url_for('series.get_series_by_user_query')}}">
+                {{query_form.hidden_tag()}}
+                {{ wtf.render_field(query_form.gender) }}
+                {{ wtf.render_field(query_form.search_value) }}
+                <button class="btn btn-sm btn-info" type="submit">Buscar</button>
+            </form>
+        </div>
         <form>
             <table class="table table-striped table-hover">
                 <thead>
