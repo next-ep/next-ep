@@ -39,6 +39,13 @@ class RegisterCommentary(FlaskForm):
 class RegisterSeason(FlaskForm):
     seasons_number = IntegerField('Número da Temporada', validators=[InputRequired()])
 
+class RegisterEpisode(FlaskForm):
+    episodes_number = IntegerField('Número de Episódios', validators=[InputRequired()])
+
+class EditEpisode(FlaskForm):
+    episode_concluded = BooleanField('Episódio Concluído?')
+
 class QuerySeries(FlaskForm):
     search_value = StringField('', render_kw={'class':'form-control mr-sm-2','placeholder':'Nome Série'}, validators=[Length(min=0, max=30)])
     gender = SelectField('Gênero:', default=None)
+

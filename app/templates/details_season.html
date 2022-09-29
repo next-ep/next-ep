@@ -1,0 +1,51 @@
+{% extends 'components/base.html' %}
+{% import "bootstrap/form.html" as wtf %}
+
+{% block title %}
+<title>NextEP - {{serie.name}}</title>
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div>
+        <a href="{{url_for('series.details_serie', id=serie.id)}}" class="btn btn-sm" role="button">Retornar</a>
+        <div class="card-header">
+            <h2>Episódios cadastrados:</h2>
+        </div>
+        <form>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                      <th scope="col">Episódio</th>
+                      <th scope="col">Concluído</th>
+                      <th scope="col">Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for episode in episodes %}
+                    <tr>
+                        <td>{{episode.episode_number}}</td>
+                        <td>{{episode.concluded}}</td>
+                        <td>
+                            <a href="{{url_for('series.edit_episode',id=episode.id)}}" class="btn btn-sm btn-warning" role="button">Editar</a>
+                            <a href="{{url_for('series.delete_episode',id=episode.id)}}" class="btn btn-sm btn-danger" role="button">Excluir</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+            </table>
+            <br>
+            <a id="add-seasons" class="btn btn-lg btn-primary btn-block" method="POST" href="{{url_for('series.add_single_episode', id=season.id)}}" role="button">Adicionar Episódio</a>
+        </form>
+</div>
+<br>
+
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+{% endblock %}
