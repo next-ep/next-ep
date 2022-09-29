@@ -3,7 +3,7 @@ from typing import List
 from flask import render_template, redirect, flash, url_for, request
 from flask_login import login_required, current_user
 from app.models import Season, Serie, User, Commentary
-from app.forms import EditSerie, RegisterSeason, RegisterSerie, RegisterCommentary
+from app.forms import EditSerie, RegisterSeason, RegisterSerie, RegisterCommentary, QuerySeries
 from app import db
 
 from . import series
@@ -29,9 +29,30 @@ def register_serie():
 @series.route('/series', methods=['GET'])
 @login_required
 def get_series_by_user():
+    query_form = QuerySeries()
     user = User.query.filter_by(id=current_user.get_id()).first()
     series = db.session.execute(f'SELECT * FROM Serie s WHERE s.user_id = {user.id}')
-    return render_template('list_series.html', series=series)
+    genders = db.session.execute(f'SELECT DISTINCT serie_type FROM Serie s WHERE s.user_id = {user.id}')
+    query_form.gender.choices = [("")]+[g.serie_type for g in genders] 
+    return render_template('list_series.html', series=series, query_form=query_form)
+
+@series.route('/query_series', methods=['GET','POST'])
+@login_required
+def get_series_by_user_query():
+    query_form = QuerySeries()
+    user = User.query.filter_by(id=current_user.get_id()).first()
+    genders = db.session.execute(f'SELECT DISTINCT serie_type FROM Serie s WHERE s.user_id = {user.id}')
+    query_form.gender.choices = [("")]+[g.serie_type for g in genders] 
+    if query_form.validate_on_submit():
+        if query_form.gender.data == "":
+            series = db.session.execute(f"SELECT * FROM Serie s WHERE s.name LIKE '%{query_form.search_value.data}%' AND s.user_id = {user.id}")
+        else:
+            series = db.session.execute(f"SELECT * FROM Serie s WHERE s.name LIKE '%{query_form.search_value.data}%' AND s.serie_type = '{query_form.gender.data}' AND s.user_id = {user.id}")
+        return render_template('list_series.html', series=series, query_form=query_form)
+    else:
+        return redirect(url_for('series.get_series_by_user'))
+
+
 
 @series.route('/series/edit/<id>', methods=['GET', 'POST'])
 @login_required
