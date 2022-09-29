@@ -2,8 +2,8 @@ from hashlib import new
 from typing import List
 from flask import render_template, redirect, flash, url_for, request
 from flask_login import login_required, current_user
-from app.models import Season, Serie, User, Commentary
-from app.forms import EditSerie, RegisterSeason, RegisterSerie, RegisterCommentary
+from app.models import Episode, Season, Serie, User, Commentary
+from app.forms import EditSerie, RegisterEpisode, RegisterSeason, RegisterSerie, RegisterCommentary
 from app import db
 
 from . import series
@@ -120,5 +120,35 @@ def add_seasons(id):
         serie.seasons = list_season
         db.session.commit()
         return redirect(url_for('series.details_serie', id=id))
+
+@series.route('/serie/<serie_id>/seasons/view/<season_id>', methods=['GET'])
+@login_required
+def detail_season(serie_id, season_id):
+    serie = Serie.query.get(int(serie_id))
+    season = Season.query.get(int(season_id))
+    episodes = db.session.execute(f'SELECT * FROM episode e WHERE e.season_id = {season.id}')
+    return render_template('details_season.html', serie=serie, season=season, episodes=episodes)
+
+@series.route('/series/<serie_id>/seasons/<season_id>', methods=['GET', 'POST'])
+@login_required
+def edit_season(serie_id, season_id):
+    form = RegisterEpisode()
+    serie = Serie.query.get(int(serie_id))
+    season = Season.query.get(int(season_id))
+    count = 0
+    if request.method == "GET":
+        if season:
+            return render_template('edit_seasons.html', season=season, form=form)
+    if request.method == "POST":
+        episodes_number = form.episodes_number.data
+        list_episodes = []
+        while(count < episodes_number):
+            episode = Episode(count + 1, season.id)
+            list_episodes.append(episode)
+            count += 1
+        db.session.add_all(list_episodes)
+        season.episodes = list_episodes
+        db.session.commit()
+        return redirect(url_for('serie.details_season', id=id))
         
     

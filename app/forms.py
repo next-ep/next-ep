@@ -38,3 +38,6 @@ class RegisterCommentary(FlaskForm):
 
 class RegisterSeason(FlaskForm):
     seasons_number = IntegerField('Número da Temporada', validators=[InputRequired()])
+
+class RegisterEpisode(FlaskForm):
+    episodes_number = IntegerField('Número de Episódios', validators=[InputRequired()])
