@@ -41,3 +41,6 @@ class RegisterSeason(FlaskForm):
 
 class RegisterEpisode(FlaskForm):
     episodes_number = IntegerField('Número de Episódios', validators=[InputRequired()])
+
+class EditEpisode(FlaskForm):
+    episode_concluded = BooleanField('Episódio Concluído?')

@@ -1,0 +1,31 @@
+{% extends 'components/base.html' %}
+{% import "bootstrap/form.html" as wtf %}
+
+{% block title %}
+<title>NextEP - Cadastrar Serie</title>
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <a href="{{url_for('series.details_serie', id=serie.id)}}" class="btn btn-sm" role="button">Retornar</a>
+    <form class="container" method="POST" action="{{url_for('series.edit_season', serie_id=serie.id, season_id=season.id)}}">
+      <h2 class="form-signin-heading">{{serie.name}}</h2>
+      <h2 class="form-signin-heading">Editar Temporada {{season.season_number}}:</h2>
+      <br>
+      <div class="form-group required">
+        <a id="add-seasons" class="btn btn-lg btn-primary btn-block" method="GET" href="{{url_for('series.add_episodes', id=season.id)}}" role="button">Adicionar Episódios!</a>
+      </div>
+      <br>
+    </form>
+</div> <!-- /container -->
+
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+<script src="{{url_for('static', filename='js.js')}}"></script>
+{% endblock %}

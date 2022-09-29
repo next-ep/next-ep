@@ -3,7 +3,7 @@ from typing import List
 from flask import render_template, redirect, flash, url_for, request
 from flask_login import login_required, current_user
 from app.models import Episode, Season, Serie, User, Commentary
-from app.forms import EditSerie, RegisterEpisode, RegisterSeason, RegisterSerie, RegisterCommentary
+from app.forms import EditSerie, RegisterEpisode, RegisterSeason, RegisterSerie, RegisterCommentary, EditEpisode
 from app import db
 
 from . import series
@@ -135,10 +135,18 @@ def edit_season(serie_id, season_id):
     form = RegisterEpisode()
     serie = Serie.query.get(int(serie_id))
     season = Season.query.get(int(season_id))
+    return render_template('edit_seasons.html', serie=serie, season=season, form=form)
+
+@series.route('/seasons/<id>/add', methods=['GET', 'POST'])
+@login_required
+def add_episodes(id):
+    form = RegisterEpisode()
+    season = Season.query.get(int(id))
+    serie= Serie.query.get(int(season.serie_id))
     count = 0
     if request.method == "GET":
         if season:
-            return render_template('edit_seasons.html', season=season, form=form)
+            return render_template('add_episodes.html', season=season, serie=serie, form=form, count=count)
     if request.method == "POST":
         episodes_number = form.episodes_number.data
         list_episodes = []
@@ -149,6 +157,33 @@ def edit_season(serie_id, season_id):
         db.session.add_all(list_episodes)
         season.episodes = list_episodes
         db.session.commit()
-        return redirect(url_for('serie.details_season', id=id))
-        
-    
+        return redirect(url_for('series.detail_season', serie_id=season.serie_id, season_id=season.id))
+
+@series.route('/episode/<id>', methods=['GET', 'POST'])
+@login_required
+def edit_episode(id):
+    form = EditEpisode()
+    episode = Episode.query.get(int(id))
+    season = Season.query.get(int(episode.season_id))
+    serie = Serie.query.get(int(season.serie_id))
+    if request.method == "GET":
+        if episode and season and serie:
+            return render_template('edit_episode.html', episode=episode, season=season, serie=serie, form=form)
+    if request.method == "POST":
+        episode.concluded = form.episode_concluded.data
+        db.session.commit()
+        return redirect(url_for('series.detail_season', serie_id=season.serie_id, season_id=season.id))
+
+@series.route('/episode/delete/<id>', methods=['GET', 'POST'])
+@login_required
+def delete_episode(id):
+    episode = Episode.query.get(int(id))
+    season = Season.query.get(int(episode.season_id))
+    serie = Serie.query.get(int(season.serie_id))
+    if episode and season and serie:
+        db.session.delete(episode)
+        db.session.commit()
+        return redirect(url_for('series.detail_season', serie_id=serie.id, season_id=season.id))
+    else:
+        flash("Erro ao deletar episódio. Tente novamente.", category="warning")
+        return redirect(url_for('series.detail_season', serie_id=serie.id, season_id=season.id))
