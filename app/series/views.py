@@ -1,7 +1,9 @@
 from hashlib import new
 from typing import List
-from flask import render_template, redirect, flash, url_for, request
+from flask import render_template, redirect, flash, session, url_for, request
 from flask_login import login_required, current_user
+from flask_sqlalchemy import Model
+from sqlalchemy import func
 from app.models import Episode, Season, Serie, User, Commentary
 from app.forms import EditSerie, RegisterEpisode, RegisterSeason, RegisterSerie, RegisterCommentary, EditEpisode
 from app import db

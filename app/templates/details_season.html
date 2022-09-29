@@ -38,6 +38,8 @@
                     {% endfor %}
                   </tbody>
             </table>
+            <br>
+            <a id="add-seasons" class="btn btn-lg btn-primary btn-block" method="POST" href="{{url_for('series.add_single_episode', id=season.id)}}" role="button">Adicionar Episódio</a>
         </form>
 </div>
 <br>
