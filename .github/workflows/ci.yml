@@ -5,7 +5,7 @@ jobs:
     name: Deploy PRD
     runs-on: ubuntu-latest
     steps:
-    - name: executing remote ssh commands using password
+    - name: executing remote ssh commands using ssh key
       uses: appleboy/ssh-action@master
       with:
         host: "54.83.74.46"
