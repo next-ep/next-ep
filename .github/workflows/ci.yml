@@ -2,15 +2,15 @@ name: remote ssh command
 on: [push]
 jobs:
   deploy:
-    name: Deploy PRD
+    name: Update system in EC2 instance
     runs-on: ubuntu-latest
     steps:
     - name: executing remote ssh commands using ssh key
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
-        username: ${{ secrets.KEY }}
-        key: ${{ secrets.USERNAME }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.key }}
         port: ${{ secrets.PORT }}
         script: |
           cd /app/next-ep/
