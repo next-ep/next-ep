@@ -12,7 +12,7 @@ jobs:
     - name: Executing remote ssh commands using ssh key
       uses: appleboy/ssh-action@master
       env:
-        GIT_TAG: "PRODUCTION_$dt"
+        GIT_TAG: PRODUCTION_$dt
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
