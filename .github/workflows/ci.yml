@@ -5,9 +5,11 @@ jobs:
     name: Update system in EC2 instance
     runs-on: ubuntu-latest
     steps:
-    - name: Generate new tag
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Generating new tag
       run: dt=$(date '+%Y%m%d_%H%M') && git tag PRODUCTION_$dt && git push origin --tags && GIT_TAG=PRODUCTION_$dt
-    - name: executing remote ssh commands using ssh key
+    - name: Executing remote ssh commands using ssh key
       uses: appleboy/ssh-action@master
       env:
         GIT_TAG: "PRODUCTION_$dt"
