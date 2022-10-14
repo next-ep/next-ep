@@ -1,0 +1,29 @@
+name: remote ssh command
+on: 
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    name: Update system in EC2 instance
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Generating new tag
+      run: dt=$(date '+%Y%m%d_%H%M') && git tag PRODUCTION_$dt && git push origin --tags && GIT_TAG=PRODUCTION_$dt
+    - name: Executing remote ssh commands using ssh key
+      uses: appleboy/ssh-action@master
+      env:
+        GIT_TAG: $GIT_TAG
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.key }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd /app/next-ep/
+          ls -la
+          sudo git checkout .
+          sudo git fetch
+          sudo git checkout $GIT_TAG
