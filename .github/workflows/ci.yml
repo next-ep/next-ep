@@ -12,4 +12,7 @@ jobs:
         username: ubuntu
         key: ${{ secrets.KEY }}
         port: 22
-        script: whoami
+        script: |
+          cd /app/next-ep/
+          sudo git checkout .
+          sudo git fetch
