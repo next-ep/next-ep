@@ -1,9 +1,5 @@
-from hashlib import new
-from typing import List
 from flask import render_template, redirect, flash, session, url_for, request
 from flask_login import login_required, current_user
-from flask_sqlalchemy import Model
-from sqlalchemy import func
 from app.models import Episode, Season, Serie, User, Commentary
 from app.forms import RegisterEpisode, RegisterSeason, RegisterSerie, RegisterCommentary, EditEpisode, QuerySeries
 
@@ -195,6 +191,27 @@ def edit_episode(id):
             return render_template('edit_episode.html', episode=episode, season=season, serie=serie, form=form)
     if request.method == "POST":
         episode.concluded = form.episode_concluded.data
+        db.session.commit()
+        season_episodes = season.episodes
+        count_episode = len(season_episodes)
+        verifier_episode = 0
+        for season_episode in season_episodes:
+            if season_episode.concluded == True:
+                verifier_episode += 1
+        if verifier_episode == count_episode:
+            season.concluded = True
+        else:
+            season.concluded = False
+        serie_seasons = serie.seasons
+        count_season = len(serie_seasons)
+        verifier_season = 0
+        for serie_season in serie_seasons:
+            if serie_season.concluded == True:
+                verifier_season += 1
+        if verifier_season == count_season:
+            serie.concluded = True
+        else:
+            serie.concluded = False
         db.session.commit()
         return redirect(url_for('series.detail_season', serie_id=season.serie_id, season_id=season.id))
 

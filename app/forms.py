@@ -48,4 +48,3 @@ class EditEpisode(FlaskForm):
 class QuerySeries(FlaskForm):
     search_value = StringField('', render_kw={'class':'form-control mr-sm-2','placeholder':'Nome Série'}, validators=[Length(min=0, max=30)])
     gender = SelectField('Gênero:', default=None)
-
