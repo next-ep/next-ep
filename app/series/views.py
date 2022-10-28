@@ -31,9 +31,26 @@ def get_series_by_user():
     query_form = QuerySeries()
     user = User.query.filter_by(id=current_user.get_id()).first()
     series = db.session.execute(f'SELECT * FROM Serie s WHERE s.user_id = {user.id}')
+    private = db.session.execute(f'SELECT private FROM public."user" s WHERE s.id = {user.id}').first()
     genders = db.session.execute(f'SELECT DISTINCT serie_type FROM Serie s WHERE s.user_id = {user.id}')
     query_form.gender.choices = [("")]+[g.serie_type for g in genders] 
-    return render_template('list_series.html', series=series, query_form=query_form)
+    return render_template('list_series.html', series=series, private=private, query_form=query_form)
+
+@series.route('/series/privar', methods=['GET'])
+@login_required
+def private_user_profile():
+    user = User.query.filter_by(id=current_user.get_id()).first()
+    user.private = True
+    db.session.commit()
+    return redirect(url_for('series.get_series_by_user'))
+
+@series.route('/series/desprivar', methods=['GET'])
+@login_required
+def unprivate_user_profile():
+    user = User.query.filter_by(id=current_user.get_id()).first()
+    user.private = False
+    db.session.commit()
+    return redirect(url_for('series.get_series_by_user'))
 
 @series.route('/query_series', methods=['GET','POST'])
 @login_required
@@ -47,7 +64,8 @@ def get_series_by_user_query():
             series = db.session.execute(f"SELECT * FROM Serie s WHERE s.name LIKE '%{query_form.search_value.data}%' AND s.user_id = {user.id}")
         else:
             series = db.session.execute(f"SELECT * FROM Serie s WHERE s.name LIKE '%{query_form.search_value.data}%' AND s.serie_type = '{query_form.gender.data}' AND s.user_id = {user.id}")
-        return render_template('list_series.html', series=series, query_form=query_form)
+        private = db.session.execute(f'SELECT private FROM public."user" s WHERE s.id = {user.id}').first()
+        return render_template('list_series.html', series=series, private=private, query_form=query_form)
     else:
         return redirect(url_for('series.get_series_by_user'))
 
@@ -228,3 +246,50 @@ def delete_episode(id):
     else:
         flash("Erro ao deletar episódio. Tente novamente.", category="warning")
         return redirect(url_for('series.detail_season', serie_id=serie.id, season_id=season.id))
+
+
+@series.route('/series/publico/<id>', methods=['GET','POST'])
+@login_required
+def get_series_by_public_user(id):
+    user = User.query.filter_by(id=id).first()
+    query_form = QuerySeries()
+    series = db.session.execute(f'SELECT * FROM Serie s WHERE s.user_id = {user.id}')
+    genders = db.session.execute(f'SELECT DISTINCT serie_type FROM Serie s WHERE s.user_id = {user.id}')
+    query_form.gender.choices = [("")]+[g.serie_type for g in genders] 
+    return render_template('list_series_public.html', series=series, user=user, query_form=query_form)
+
+@series.route('/series/publico/<id>/query_series', methods=['GET','POST'])
+@login_required
+def get_public_series_by_user_query(id):
+    query_form = QuerySeries()
+    user = User.query.filter_by(id=id).first()
+    genders = db.session.execute(f'SELECT DISTINCT serie_type FROM Serie s WHERE s.user_id = {id}')
+    query_form.gender.choices = [("")]+[g.serie_type for g in genders] 
+    if query_form.validate_on_submit():
+        if query_form.gender.data == "":
+            series = db.session.execute(f"SELECT * FROM Serie s WHERE s.name LIKE '%{query_form.search_value.data}%' AND s.user_id = {id}")
+        else:
+            series = db.session.execute(f"SELECT * FROM Serie s WHERE s.name LIKE '%{query_form.search_value.data}%' AND s.serie_type = '{query_form.gender.data}' AND s.user_id = {id}")
+        return render_template('list_series_public.html', user=user, series=series, query_form=query_form)
+    else:
+        return redirect(url_for('series.get_series_by_public_user',id=id))
+
+@series.route('/series/view/public/<user_id>/<serie_id>', methods=['GET', 'POST'])
+@login_required
+def details_public_serie(user_id,serie_id):
+    serie = Serie.query.get(int(serie_id))
+    seasons = db.session.execute(f'SELECT * FROM season s WHERE s.serie_id = {serie.id}')
+    commentarys = db.session.execute(f'SELECT * FROM commentary c WHERE c.serie_id = {serie.id}')
+    if seasons and commentarys:
+        return render_template('details_public_serie.html', user_id = user_id, serie=serie, seasons=seasons, commentarys=commentarys)
+    else:    
+        flash("Erro ao encontrar série. Tente novamente.", category="warning")
+        return redirect(url_for('series.get_series_by_public_user',id=user_id))
+
+@series.route('/serie/view/public/<user_id>/<serie_id>/<season_id>', methods=['GET'])
+@login_required
+def details_public_season(user_id,serie_id, season_id):
+    serie = Serie.query.get(int(serie_id))
+    season = Season.query.get(int(season_id))
+    episodes = db.session.execute(f'SELECT * FROM episode e WHERE e.season_id = {season.id}')
+    return render_template('details_public_season.html', user_id=user_id, serie=serie, season=season, episodes=episodes)

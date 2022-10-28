@@ -2,7 +2,7 @@
 {% import "bootstrap/form.html" as wtf %}
 
 {% block title %}
-<title>NextEP - Suas Séries</title>
+<title>NextEP - user.username</title>
 {% endblock %}
 
 {% block styles %}
@@ -12,29 +12,20 @@
 {% block content %}
 <div class="card">
     <div class="card-header">
-        <h2>Séries cadastradas:</h2>
+        <h2>Séries cadastradas pelo usuário {{user.username}}</h2>
     </div>
     <div>
         <div style="float: right; margin-right: 1%; margin-top: 0.25%; margin-bottom: 0.25%;">
-            <a href="{{url_for('series.get_series_by_user')}}" class="btn btn-sm btn-secondary"role="button">Limpar Busca</a>
+            <a href="{{url_for('series.get_series_by_public_user', id=user.id)}}" class="btn btn-sm btn-secondary"role="button">Limpar Busca</a>
         </div>
         <div style="float: right; margin-right: 1%;">
-            <form class="form-inline mr-auto" method="POST" action="{{url_for('series.get_series_by_user_query')}}">
+            <form class="form-inline mr-auto" method="POST" action="{{url_for('series.get_public_series_by_user_query',id=user.id)}}">
                 {{query_form.hidden_tag()}}
                 {{ wtf.render_field(query_form.gender) }}
                 {{ wtf.render_field(query_form.search_value) }}
                 <button class="btn btn-sm btn-info" type="submit">Buscar</button>
             </form>
         </div>
-        {% if private.private %}
-            <div style="float: left; margin-left: 1%; margin-top: 0.25%; margin-bottom: 0.25%;">
-                <a href="{{url_for('series.unprivate_user_profile')}}" class="btn btn-sm btn-danger"role="button">Tornar Perfil Público</a>
-            </div>
-        {% else %}
-            <div style="float: left; margin-left: 1%; margin-top: 0.25%; margin-bottom: 0.25%;">
-                <a href="{{url_for('series.private_user_profile')}}" class="btn btn-sm btn-success"role="button">Tornar Perfil Privado</a>
-            </div>
-        {% endif %}
         <form>
             <table class="table table-striped table-hover">
                 <thead>
@@ -54,9 +45,7 @@
                         <td>{{serie.serie_type}}</td>
                         <td>{{serie.concluded}}</td>
                         <td>
-                            <a href="{{url_for('series.details_serie',id=serie.id)}}" class="btn btn-sm btn-info" role="button">Detalhes</a>
-                            <a href="{{url_for('series.edit_serie',id=serie.id)}}" class="btn btn-sm btn-warning" role="button">Editar</a>
-                            <a href="{{url_for('series.delete_serie',id=serie.id)}}" class="btn btn-sm btn-danger" role="button">Excluir</a>
+                            <a href="{{url_for('series.details_public_serie',user_id=user.id,serie_id=serie.id)}}" class="btn btn-sm btn-info" role="button">Detalhes</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -66,10 +55,6 @@
     </div>
 </div>
 <br>
-
-<ul>
-    <a href="{{url_for('series.register_serie')}}" class="btn btn-primary">Adicione uma nova série</a>
-</ul>
 
 {% endblock %}
 

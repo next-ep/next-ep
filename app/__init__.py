@@ -6,7 +6,7 @@ from flask_login import LoginManager
 from dotenv import load_dotenv
 import os
 
-load_dotenv()  # take environment variables from .env.
+config = load_dotenv()  # take environment variables from .env.
 db = SQLAlchemy()
 login_manager = LoginManager()
 bootstrap = Bootstrap4()
