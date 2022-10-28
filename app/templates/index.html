@@ -19,26 +19,20 @@
         <p class="card-text">Aqui você controla as séries que você assiste, e descobre o que seus amigos estão assistindo também.</p>
         <a href="{{url_for('series.get_series_by_user')}}" class="btn btn-primary">Gerencie suas séries</a>
         </div>
-        <div class="row">
-          <div class="col-sm-6">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">Nome da série</h5>
-                <p class="card-text">Comentário sobre a série.</p>
-                <a href="#" class="btn btn-primary">Visitar</a>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-6">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">Nome da série</h5>
-                <p class="card-text">Comentário sobre a série.</p>
-                <a href="#" class="btn btn-primary">Visitar</a>
-              </div>
-            </div>
-          </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Usuários Públicos:</h5>
+        <p class="card-text">Veja aqui o que os outros usuários estão assistindo.</p>
+        <div class="list-group" style="float: left;">
+        {% for user in users %}
+          <a href="{{url_for('series.get_series_by_public_user',id=user.id)}}" type="button" class="list-group-item list-group-item-action" role="button">
+            {{user.username}}
+          </a>
+        {% endfor %}
         </div>
+      </div>
+    </div>
     {%else%}
     <div class="card text-center">
       <div class="card-header" style="font-size:medium">

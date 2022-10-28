@@ -1,0 +1,63 @@
+{% extends 'components/base.html' %}
+{% import "bootstrap/form.html" as wtf %}
+
+{% block title %}
+<title>NextEP - {{serie.name}}</title>
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div>
+        <a href="{{url_for('series.get_series_by_public_user',id=user_id)}}" class="btn btn-sm" role="button">Retornar</a>
+        <div class="card-header">
+            <h2>Temporadas cadastradas:</h2>
+        </div>
+        <form>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                      <th scope="col">Temporada</th>
+                      <th scope="col">Número Episódios</th>
+                      <th scope="col">Concluída</th>
+                      <th scope="col">Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for season in seasons %}
+                    <tr>
+                        <td>{{season.season_number}}</td>
+                        <td>{{season.episodes}}</td>
+                        <td>{{season.concluded}}</td>
+                        <td>
+                            <a href="{{url_for('series.detail_season', serie_id=serie.id, season_id=season.id)}}" class="btn btn-sm btn-info" role="button">Detalhes</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+            </table>
+        </form>
+        <div class="card-header">
+            <h2>Comentários:</h2>
+        </div>
+        <table class="table table-striped table-hover">
+              <tbody>
+                {% for commentary in commentarys %}
+                <tr>
+                    <td>{{commentary.text}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+        </table>
+        </div>
+</div>
+<br>
+
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+{% endblock %}

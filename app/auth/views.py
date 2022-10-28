@@ -9,7 +9,9 @@ from . import auth
 
 @auth.route("/")
 def index():
-    return render_template("index.html")
+    users = db.session.execute(f'SELECT username, id FROM public."user" U where U.id!={current_user.get_id()} and U.private = False order by random() limit 5')
+
+    return render_template("index.html",users=users)
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():

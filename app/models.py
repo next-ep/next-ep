@@ -14,6 +14,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(255), unique=True)
     email = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255))
+    private = db.Column(db.Boolean, unique=False, default=True)
     series = relationship('Serie', backref="user")
 
 class Serie(db.Model):
