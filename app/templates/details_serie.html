@@ -35,12 +35,20 @@
                         <td>
                             <a href="{{url_for('series.detail_season', serie_id=serie.id, season_id=season.id)}}" class="btn btn-sm btn-info" role="button">Detalhes</a>
                             <a href="{{url_for('series.edit_season', serie_id=serie.id, season_id=season.id)}}" class="btn btn-sm btn-warning" role="button">Editar</a>
+                            <a href="{{url_for('series.delete_season', serie_id=serie.id, season_id=season.id)}}" class="btn btn-sm btn-danger" role="button">Deletar</a>
                         </td>
                     </tr>
                     {% endfor %}
                   </tbody>
             </table>
+            <br>
         </form>
+        <div>
+            <div>
+                <a href="{{url_for('series.add_single_season', serie_id=serie.id)}}" class="btn btn-lg btn-primary btn-block" type="submit">Adicionar temporada!</a>
+            </div>
+        </div>
+        <br>
         <div class="card-header">
             <h2>Comentários:</h2>
         </div>

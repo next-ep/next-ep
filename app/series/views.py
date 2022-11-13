@@ -104,7 +104,7 @@ def delete_serie(id):
 def details_serie(id):
     form = RegisterCommentary()
     serie = Serie.query.get(int(id))
-    seasons = db.session.execute(f'SELECT * FROM season s WHERE s.serie_id = {serie.id}')
+    seasons = db.session.execute(f'SELECT * FROM season s WHERE s.serie_id = {serie.id} ORDER BY s.season_number')
     commentarys = db.session.execute(f'SELECT * FROM commentary c WHERE c.serie_id = {serie.id}')
     if seasons and commentarys:
         return render_template('details_serie.html', seasons=seasons, serie=serie, commentarys=commentarys, form=form)
@@ -159,12 +159,42 @@ def add_seasons(id):
         db.session.commit()
         return redirect(url_for('series.details_serie', id=id))
 
+@series.route('/serie/<serie_id>/seasons/<season_id>', methods=['GET', 'POST'])
+@login_required
+def delete_season(serie_id, season_id):
+    season = Season.query.get(int(season_id))
+    
+    if season:
+        db.session.delete(season)
+        db.session.commit()
+
+    return redirect(url_for('series.details_serie', id=serie_id))
+
+@series.route('/serie/<serie_id>', methods=['GET', 'POST'])
+@login_required
+def add_single_season(serie_id):
+    serie = Serie.query.get(int(serie_id))
+    count = 1
+    
+    if serie:
+        seasons = db.session.execute(f'SELECT * FROM season s WHERE s.serie_id = {serie.id}')
+        if seasons:
+            for season in seasons:
+                count = count + 1
+
+        new_season = Season(count, serie.id)
+        db.session.add(new_season)
+        serie.seasons.append(new_season)
+        db.session.commit()
+
+    return redirect(url_for('series.details_serie', id=serie_id))
+
 @series.route('/serie/<serie_id>/seasons/view/<season_id>', methods=['GET'])
 @login_required
 def detail_season(serie_id, season_id):
     serie = Serie.query.get(int(serie_id))
     season = Season.query.get(int(season_id))
-    episodes = db.session.execute(f'SELECT * FROM episode e WHERE e.season_id = {season.id}')
+    episodes = db.session.execute(f'SELECT * FROM episode e WHERE e.season_id = {season.id} ORDER BY e.episode_number')
     return render_template('details_season.html', serie=serie, season=season, episodes=episodes)
 
 @series.route('/series/<serie_id>/seasons/<season_id>', methods=['GET', 'POST'])
@@ -196,6 +226,25 @@ def add_episodes(id):
         season.episodes = list_episodes
         db.session.commit()
         return redirect(url_for('series.detail_season', serie_id=season.serie_id, season_id=season.id))
+
+@series.route('/season/<season_id>', methods=['GET', 'POST'])
+@login_required
+def add_single_episode(season_id):
+    season = Season.query.get(int(season_id))
+    count = 1
+    
+    if season:
+        episodes = db.session.execute(f'SELECT * FROM episode e WHERE e.season_id = {season.id}')
+        if episodes:
+            for episode in episodes:
+                count = count + 1
+
+        new_episode = Episode(count, season.id)
+        db.session.add(new_episode)
+        season.episodes.append(new_episode)
+        db.session.commit()
+
+    return redirect(url_for('series.detail_season', serie_id=season.serie_id, season_id=season.id))
 
 @series.route('/episode/<id>', methods=['GET', 'POST'])
 @login_required
