@@ -24,6 +24,6 @@ jobs:
         script: |
           cd /app/next-ep/
           ls -la
-          sudo git checkout .
           sudo git fetch
+          sudo git pull
           sudo git checkout $GIT_TAG
