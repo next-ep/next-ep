@@ -249,38 +249,36 @@ def add_single_episode(season_id):
 @series.route('/episode/<id>', methods=['GET', 'POST'])
 @login_required
 def edit_episode(id):
-    form = EditEpisode()
     episode = Episode.query.get(int(id))
     season = Season.query.get(int(episode.season_id))
     serie = Serie.query.get(int(season.serie_id))
-    if request.method == "GET":
-        if episode and season and serie:
-            return render_template('edit_episode.html', episode=episode, season=season, serie=serie, form=form)
-    if request.method == "POST":
-        episode.concluded = form.episode_concluded.data
-        db.session.commit()
-        season_episodes = season.episodes
-        count_episode = len(season_episodes)
-        verifier_episode = 0
-        for season_episode in season_episodes:
-            if season_episode.concluded == True:
-                verifier_episode += 1
-        if verifier_episode == count_episode:
-            season.concluded = True
-        else:
-            season.concluded = False
-        serie_seasons = serie.seasons
-        count_season = len(serie_seasons)
-        verifier_season = 0
-        for serie_season in serie_seasons:
-            if serie_season.concluded == True:
-                verifier_season += 1
-        if verifier_season == count_season:
-            serie.concluded = True
-        else:
-            serie.concluded = False
-        db.session.commit()
-        return redirect(url_for('series.detail_season', serie_id=season.serie_id, season_id=season.id))
+    if episode.concluded:
+        episode.concluded = False
+    else:
+        episode.concluded = True
+    db.session.commit()
+    season_episodes = season.episodes
+    count_episode = len(season_episodes)
+    verifier_episode = 0
+    for season_episode in season_episodes:
+        if season_episode.concluded == True:
+            verifier_episode += 1
+    if verifier_episode == count_episode:
+        season.concluded = True
+    else:
+        season.concluded = False
+    serie_seasons = serie.seasons
+    count_season = len(serie_seasons)
+    verifier_season = 0
+    for serie_season in serie_seasons:
+        if serie_season.concluded == True:
+            verifier_season += 1
+    if verifier_season == count_season:
+        serie.concluded = True
+    else:
+        serie.concluded = False
+    db.session.commit()
+    return redirect(url_for('series.detail_season', serie_id=season.serie_id, season_id=season.id))
 
 @series.route('/episode/delete/<id>', methods=['GET', 'POST'])
 @login_required

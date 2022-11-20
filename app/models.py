@@ -43,7 +43,6 @@ class Season(db.Model):
         self.season_number = season_number
         self.serie_id = serie_id
 
-
 class Episode(db.Model):
     __tablename__ = "episode"
     id = db.Column(db.Integer, primary_key=True)
