@@ -105,6 +105,15 @@ def details_serie(id):
     form = RegisterCommentary()
     serie = Serie.query.get(int(id))
     seasons = db.session.execute(f'SELECT * FROM season s WHERE s.serie_id = {serie.id} ORDER BY s.season_number')
+    for season in seasons:
+        season = Season.query.get(int(season.id))
+        count = 0
+        number_episodes = db.session.execute(f'SELECT * FROM episode e WHERE e.season_id = {season.id}')
+        for episode in number_episodes:
+            count = count + 1
+        season.episodes_number = count
+        db.session.commit()
+    seasons = db.session.execute(f'SELECT * FROM season s WHERE s.serie_id = {serie.id} ORDER BY s.season_number')
     commentarys = db.session.execute(f'SELECT * FROM commentary c WHERE c.serie_id = {serie.id}')
     if seasons and commentarys:
         return render_template('details_serie.html', seasons=seasons, serie=serie, commentarys=commentarys, form=form)

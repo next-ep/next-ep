@@ -30,7 +30,7 @@
                     {% for season in seasons %}
                     <tr>
                         <td>{{season.season_number}}</td>
-                        <td>{{season.episodes|length}}</td>
+                        <td>{{season.episodes_number}}</td>
                         <td>{{season.concluded}}</td>
                         <td>
                             <a href="{{url_for('series.detail_season', serie_id=serie.id, season_id=season.id)}}" class="btn btn-sm btn-info" role="button">Detalhes</a>
