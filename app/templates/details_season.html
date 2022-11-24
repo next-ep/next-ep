@@ -31,7 +31,11 @@
                         <td>{{episode.episode_number}}</td>
                         <td>{{episode.concluded}}</td>
                         <td>
-                            <a href="{{url_for('series.edit_episode',id=episode.id)}}" class="btn btn-sm btn-warning" role="button">Editar</a>
+                            {% if episode.concluded == false %}
+                            <a href="{{url_for('series.edit_episode',id=episode.id)}}" class="btn btn-sm btn-success" role="button">Concluir</a>
+                            {% else %}
+                            <a href="{{url_for('series.edit_episode',id=episode.id)}}" class="btn btn-sm btn-warning" role="button">Não Concluído</a>
+                            {% endif %}
                             <a href="{{url_for('series.delete_episode',id=episode.id)}}" class="btn btn-sm btn-danger" role="button">Excluir</a>
                         </td>
                     </tr>
@@ -40,6 +44,12 @@
             </table>
             <br>
         </form>
+        <br>
+        <div>
+            <div>
+                <a href="{{url_for('series.add_single_episode', season_id=season.id)}}" class="btn btn-lg btn-primary btn-block" type="submit">Adicionar Episódio!</a>
+            </div>
+        </div>
 </div>
 <br>
 
