@@ -74,128 +74,165 @@ def get_series_by_user_query():
 @series.route('/series/edit/<id>', methods=['GET', 'POST'])
 @login_required
 def edit_serie(id):
-    serie = Serie.query.get(int(id))
-    if request.method == 'POST':
-        user = User.query.filter_by(id=current_user.get_id()).first()
-        if user and serie:
-            serie.name = request.form['serie_name']
-            serie.user_id = user.id
-            serie.serie_type = request.form['serie_type']
-            db.session.commit()
-            return redirect(url_for('series.get_series_by_user'))
-        flash("Erro ao editar série. Tente novamente.", category="warning")
-        return redirect(url_for('series.edit_serie'))
-    return render_template('edit_serie.html', serie=serie)
+    if str(current_user.get_id()) == str(Serie.query.get(int(id)).user_id):
+        serie = Serie.query.get(int(id))
+        if request.method == 'POST':
+            user = User.query.filter_by(id=current_user.get_id()).first()
+            if user and serie:
+                serie.name = request.form['serie_name']
+                serie.user_id = user.id
+                serie.serie_type = request.form['serie_type']
+                db.session.commit()
+                return redirect(url_for('series.get_series_by_user'))
+            flash("Erro ao editar série. Tente novamente.", category="warning")
+            return redirect(url_for('series.edit_serie'))
+        return render_template('edit_serie.html', serie=serie)
+    else:
+        flash("Erro de acesso!", category="warning")
+        return redirect(url_for('auth.index'))
 
 @series.route('/series/delete/<id>', methods=['GET', 'POST'])
 @login_required
 def delete_serie(id):
-    serie = Serie.query.get(int(id))
-    if serie:
-        db.session.delete(serie)
-        db.session.commit()
-        return redirect(url_for('series.get_series_by_user'))
+    if str(current_user.get_id()) == str(Serie.query.get(int(id)).user_id):
+        serie = Serie.query.get(int(id))
+        if serie:
+            db.session.delete(serie)
+            db.session.commit()
+            return redirect(url_for('series.get_series_by_user'))
+        else:
+            flash("Erro ao editar série. Tente novamente.", category="warning")
+            return redirect(url_for('series.get_series_by_user'))
     else:
-        flash("Erro ao editar série. Tente novamente.", category="warning")
-        return redirect(url_for('series.get_series_by_user'))
+        flash("Erro de acesso!", category="warning")
+        return redirect(url_for('auth.index'))
 
 @series.route('/series/view/<id>', methods=['GET', 'POST'])
 @login_required
 def details_serie(id):
-    form = RegisterCommentary()
-    serie = Serie.query.get(int(id))
-    seasons = db.session.execute(f'SELECT * FROM season s WHERE s.serie_id = {serie.id}')
-    commentarys = db.session.execute(f'SELECT * FROM commentary c WHERE c.serie_id = {serie.id}')
-    if seasons and commentarys:
-        return render_template('details_serie.html', seasons=seasons, serie=serie, commentarys=commentarys, form=form)
-    else:    
-        flash("Erro ao encontrar série. Tente novamente.", category="warning")
-        return redirect(url_for('series.get_series_by_user'))
+    if str(current_user.get_id()) == str(Serie.query.get(int(id)).user_id):
+        form = RegisterCommentary()
+        serie = Serie.query.get(int(id))
+        seasons = db.session.execute(f'SELECT * FROM season s WHERE s.serie_id = {serie.id}')
+        commentarys = db.session.execute(f'SELECT * FROM commentary c WHERE c.serie_id = {serie.id}')
+        if seasons and commentarys:
+            return render_template('details_serie.html', seasons=seasons, serie=serie, commentarys=commentarys, form=form)
+        else:    
+            flash("Erro ao encontrar série. Tente novamente.", category="warning")
+            return redirect(url_for('series.get_series_by_user'))
+    else:
+        flash("Erro de acesso!", category="warning")
+        return redirect(url_for('auth.index'))
 
 @series.route('/series/<id>/commentary/new', methods=['GET', 'POST'])
 @login_required
 def add_commentary(id):
-    serie = Serie.query.get(int(id))
-    form = RegisterCommentary()
-    if form.validate_on_submit():
-        if serie:
-            new_commentary = Commentary(text = form.commentary_text.data, serie_id=serie.id)
-            db.session.add(new_commentary)
-            db.session.commit()
-            return redirect(url_for('series.details_serie', id=id))
-    return redirect(url_for('series.details_serie', id=id))
+    if str(current_user.get_id()) == str(Serie.query.get(int(id)).user_id):
+        serie = Serie.query.get(int(id))
+        form = RegisterCommentary()
+        if form.validate_on_submit():
+            if serie:
+                new_commentary = Commentary(text = form.commentary_text.data, serie_id=serie.id)
+                db.session.add(new_commentary)
+                db.session.commit()
+                return redirect(url_for('series.details_serie', id=id))
+        return redirect(url_for('series.details_serie', id=id))
+    else:
+        flash("Erro de acesso!", category="warning")
+        return redirect(url_for('auth.index'))
 
 @series.route('/series/<serie_id>/commentary/delete/<commentary_id>', methods=['GET', 'POST'])
 @login_required
 def delete_commentary(serie_id,commentary_id):
-    serie = Serie.query.get(int(serie_id))
-    commentary = Commentary.query.get(int(commentary_id))
-    if serie and commentary:
-        db.session.delete(commentary)
-        db.session.commit()
-        return redirect(url_for('series.details_serie', id=serie_id))
+    if str(current_user.get_id()) == str(Serie.query.get(int(serie_id)).user_id):
+        serie = Serie.query.get(int(serie_id))
+        commentary = Commentary.query.get(int(commentary_id))
+        if serie and commentary:
+            db.session.delete(commentary)
+            db.session.commit()
+            return redirect(url_for('series.details_serie', id=serie_id))
+        else:
+            flash("Erro ao deletar comentário. Tente novamente.", category="warning")
+            return redirect(url_for('series.details_serie', id=serie_id))
     else:
-        flash("Erro ao deletar comentário. Tente novamente.", category="warning")
-        return redirect(url_for('series.details_serie', id=serie_id))
+        flash("Erro de acesso!", category="warning")
+        return redirect(url_for('auth.index'))
 
 @series.route('/series/<id>/seasons/add', methods=['GET', 'POST'])
 @login_required
 def add_seasons(id):
-    form = RegisterSeason()
-    serie = Serie.query.get(int(id))
-    count = 0
-    if request.method == "GET":
-        if serie:
-            return render_template('add_seasons.html', serie=serie, form=form, count=count)
-    if request.method == "POST":
-        seasons_number = form.seasons_number.data
-        list_season = []
-        while(count < seasons_number):
-            season = Season(count + 1, serie.id)
-            list_season.append(season)
-            count += 1
-        db.session.add_all(list_season)
-        serie.seasons = list_season
-        db.session.commit()
-        return redirect(url_for('series.details_serie', id=id))
+    if str(current_user.get_id()) == str(Serie.query.get(int(id)).user_id):
+        form = RegisterSeason()
+        serie = Serie.query.get(int(id))
+        count = 0
+        if request.method == "GET":
+            if serie:
+                return render_template('add_seasons.html', serie=serie, form=form, count=count)
+        if request.method == "POST":
+            seasons_number = form.seasons_number.data
+            list_season = []
+            while(count < seasons_number):
+                season = Season(count + 1, serie.id)
+                list_season.append(season)
+                count += 1
+            db.session.add_all(list_season)
+            serie.seasons = list_season
+            db.session.commit()
+            return redirect(url_for('series.details_serie', id=id))
+    else:
+        flash("Erro de acesso!", category="warning")
+        return redirect(url_for('auth.index'))
 
 @series.route('/serie/<serie_id>/seasons/view/<season_id>', methods=['GET'])
 @login_required
 def detail_season(serie_id, season_id):
-    serie = Serie.query.get(int(serie_id))
-    season = Season.query.get(int(season_id))
-    episodes = db.session.execute(f'SELECT * FROM episode e WHERE e.season_id = {season.id}')
-    return render_template('details_season.html', serie=serie, season=season, episodes=episodes)
+    if str(current_user.get_id()) == str(Serie.query.get(int(serie_id)).user_id):
+        serie = Serie.query.get(int(serie_id))
+        season = Season.query.get(int(season_id))
+        episodes = db.session.execute(f'SELECT * FROM episode e WHERE e.season_id = {season.id}')
+        return render_template('details_season.html', serie=serie, season=season, episodes=episodes)
+    else:
+        flash("Erro de acesso!", category="warning")
+        return redirect(url_for('auth.index'))
 
 @series.route('/series/<serie_id>/seasons/<season_id>', methods=['GET', 'POST'])
 @login_required
 def edit_season(serie_id, season_id):
-    form = RegisterEpisode()
-    serie = Serie.query.get(int(serie_id))
-    season = Season.query.get(int(season_id))
-    return render_template('edit_seasons.html', serie=serie, season=season, form=form)
+    if str(current_user.get_id()) == str(Serie.query.get(int(serie_id)).user_id):
+        form = RegisterEpisode()
+        serie = Serie.query.get(int(serie_id))
+        season = Season.query.get(int(season_id))
+        return render_template('edit_seasons.html', serie=serie, season=season, form=form)
+    else:
+        flash("Erro de acesso!", category="warning")
+        return redirect(url_for('auth.index'))
 
 @series.route('/seasons/<id>/add', methods=['GET', 'POST'])
 @login_required
 def add_episodes(id):
-    form = RegisterEpisode()
-    season = Season.query.get(int(id))
-    serie= Serie.query.get(int(season.serie_id))
-    count = 0
-    if request.method == "GET":
-        if season:
-            return render_template('add_episodes.html', season=season, serie=serie, form=form, count=count)
-    if request.method == "POST":
-        episodes_number = form.episodes_number.data
-        list_episodes = []
-        while(count < episodes_number):
-            episode = Episode(count + 1, season.id)
-            list_episodes.append(episode)
-            count += 1
-        db.session.add_all(list_episodes)
-        season.episodes = list_episodes
-        db.session.commit()
-        return redirect(url_for('series.detail_season', serie_id=season.serie_id, season_id=season.id))
+    serie_id=Season.query.get(int(id)).serie_id
+    if str(current_user.get_id()) == str(Serie.query.get(int(serie_id)).user_id):
+        form = RegisterEpisode()
+        season = Season.query.get(int(id))
+        serie= Serie.query.get(int(season.serie_id))
+        count = 0
+        if request.method == "GET":
+            if season:
+                return render_template('add_episodes.html', season=season, serie=serie, form=form, count=count)
+        if request.method == "POST":
+            episodes_number = form.episodes_number.data
+            list_episodes = []
+            while(count < episodes_number):
+                episode = Episode(count + 1, season.id)
+                list_episodes.append(episode)
+                count += 1
+            db.session.add_all(list_episodes)
+            season.episodes = list_episodes
+            db.session.commit()
+            return redirect(url_for('series.detail_season', serie_id=season.serie_id, season_id=season.id))
+    else:
+        flash("Erro de acesso!", category="warning")
+        return redirect(url_for('auth.index'))
 
 @series.route('/episode/<id>', methods=['GET', 'POST'])
 @login_required
@@ -204,48 +241,58 @@ def edit_episode(id):
     episode = Episode.query.get(int(id))
     season = Season.query.get(int(episode.season_id))
     serie = Serie.query.get(int(season.serie_id))
-    if request.method == "GET":
-        if episode and season and serie:
-            return render_template('edit_episode.html', episode=episode, season=season, serie=serie, form=form)
-    if request.method == "POST":
-        episode.concluded = form.episode_concluded.data
-        db.session.commit()
-        season_episodes = season.episodes
-        count_episode = len(season_episodes)
-        verifier_episode = 0
-        for season_episode in season_episodes:
-            if season_episode.concluded == True:
-                verifier_episode += 1
-        if verifier_episode == count_episode:
-            season.concluded = True
-        else:
-            season.concluded = False
-        serie_seasons = serie.seasons
-        count_season = len(serie_seasons)
-        verifier_season = 0
-        for serie_season in serie_seasons:
-            if serie_season.concluded == True:
-                verifier_season += 1
-        if verifier_season == count_season:
-            serie.concluded = True
-        else:
-            serie.concluded = False
-        db.session.commit()
-        return redirect(url_for('series.detail_season', serie_id=season.serie_id, season_id=season.id))
+    if str(current_user.get_id()) == str(serie.user_id):
+        if request.method == "GET":
+            if episode and season and serie:
+                return render_template('edit_episode.html', episode=episode, season=season, serie=serie, form=form)
+        if request.method == "POST":
+            episode.concluded = form.episode_concluded.data
+            db.session.commit()
+            season_episodes = season.episodes
+            count_episode = len(season_episodes)
+            verifier_episode = 0
+            for season_episode in season_episodes:
+                if season_episode.concluded == True:
+                    verifier_episode += 1
+            if verifier_episode == count_episode:
+                season.concluded = True
+            else:
+                season.concluded = False
+            serie_seasons = serie.seasons
+            count_season = len(serie_seasons)
+            verifier_season = 0
+            for serie_season in serie_seasons:
+                if serie_season.concluded == True:
+                    verifier_season += 1
+            if verifier_season == count_season:
+                serie.concluded = True
+            else:
+                serie.concluded = False
+            db.session.commit()
+            return redirect(url_for('series.detail_season', serie_id=season.serie_id, season_id=season.id))
+    else:
+        flash("Erro de acesso!", category="warning")
+        return redirect(url_for('auth.index'))
 
 @series.route('/episode/delete/<id>', methods=['GET', 'POST'])
 @login_required
 def delete_episode(id):
-    episode = Episode.query.get(int(id))
-    season = Season.query.get(int(episode.season_id))
-    serie = Serie.query.get(int(season.serie_id))
-    if episode and season and serie:
-        db.session.delete(episode)
-        db.session.commit()
-        return redirect(url_for('series.detail_season', serie_id=serie.id, season_id=season.id))
+    season_id = Episode.query.get(int(id)).season_id
+    serie_id = Season.query.get(int(season_id)).serie_id
+    if str(current_user.get_id()) == str(Serie.query.get(int(serie_id)).user_id):
+        episode = Episode.query.get(int(id))
+        season = Season.query.get(int(episode.season_id))
+        serie = Serie.query.get(int(season.serie_id))
+        if episode and season and serie:
+            db.session.delete(episode)
+            db.session.commit()
+            return redirect(url_for('series.detail_season', serie_id=serie.id, season_id=season.id))
+        else:
+            flash("Erro ao deletar episódio. Tente novamente.", category="warning")
+            return redirect(url_for('series.detail_season', serie_id=serie.id, season_id=season.id))
     else:
-        flash("Erro ao deletar episódio. Tente novamente.", category="warning")
-        return redirect(url_for('series.detail_season', serie_id=serie.id, season_id=season.id))
+        flash("Erro de acesso!", category="warning")
+        return redirect(url_for('auth.index'))
 
 
 @series.route('/series/publico/<id>', methods=['GET','POST'])
