@@ -37,12 +37,12 @@ class Season(db.Model):
     season_number = db.Column(db.Integer)
     serie_id = db.Column(db.Integer, db.ForeignKey('serie.id'))
     episodes = relationship('Episode', backref="season")
+    episodes_number = db.Column(db.Integer, default=0)
     concluded = db.Column(db.Boolean, unique=False, default=False)
 
     def __init__(self, season_number, serie_id):
         self.season_number = season_number
         self.serie_id = serie_id
-
 
 class Episode(db.Model):
     __tablename__ = "episode"
